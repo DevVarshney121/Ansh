@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Test Portal</title>
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --dark-bg: #0a0a0a;
+            --black-bg: #000000;
+            --card-bg: #111;
+            --wa-green: #25D366; 
+            --btn-blue: #0d47a1; 
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            font-family: 'JetBrains Mono', monospace, sans-serif;
+            margin: 0;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* --- STREAM SELECTION --- */
+        .stream-selection-section {
+            padding: 20px 0;
+            background-color: var(--dark-bg);
+            text-align: center;
+        }
+
+        .stream-btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px; 
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 10px 15px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .stream-btn-container::-webkit-scrollbar { display: none; }
+
+        .stream-btn {
+            background: #161b22;
+            color: #fff;
+            border: 1px solid #30363d;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            white-space: nowrap;
+            flex: 0 0 auto;
+        }
+
+        .stream-btn.active {
+            border-color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        /* --- TEST CONTENT SECTION --- */
+        .test-content-section {
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .test-container {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .test-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .test-card {
+            background: var(--card-bg);
+            border: 1px solid #30363d;
+            border-radius: 15px;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .test-card h2 {
+            color: var(--neon-blue);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+        }
+
+        .open-test-btn {
+            display: inline-block;
+            background: var(--neon-blue);
+            color: var(--black-bg);
+            padding: 14px 0;
+            width: 100%;
+            max-width: 250px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            cursor: pointer;
+            border: none;
+        }
+
+        /* --- FULLSCREEN IMAGE OVERLAY (ONLY FOR TEST 3) --- */
+        .img-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .img-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border: 2px solid var(--neon-blue);
+        }
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 30px;
+            font-size: 40px; color: white;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            .test-card h2 { font-size: 1.2rem; }
+            .stream-btn { padding: 10px 15px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+     
+    <section class="stream-selection-section">
+        <div class="stream-btn-container">
+            <button class="stream-btn active" onclick="showStream('science', this)">Test One</button>
+            <button class="stream-btn" onclick="showStream('commerce', this)">Test Two</button>
+            <button class="stream-btn" onclick="showStream('arts', this)">Test Three</button>
+        </div>
+    </section>
+
+    <section class="test-content-section">
+        <div id="science" class="test-container active">
+            <div class="test-card">
+                <h2>VOCAB EXAM</h2>
+                <p style="color: #888; margin-bottom: 20px; font-size: 0.9rem;">Ready to start your science evaluation? Click below.</p>
+                <a href="about.html" class="open-test-btn">OPEN TEST ONE</a>
+            </div>
+        </div>
+
+        <div id="commerce" class="test-container">
+            <div class="test-card">
+                <h2>SYNONYM PORTAL</h2>
+                <p style="color: #888; margin-bottom: 20px; font-size: 0.9rem;">Ready to start your synonym evaluation? Click below.</p>
+                <a href="contact.html" class="open-test-btn">OPEN TEST TWO</a>
+            </div>
+        </div>
+
+        <div id="arts" class="test-container">
+            <div class="test-card">
+                <h2>DEV PORTAL</h2>
+                <p style="color: #888; margin-bottom: 20px; font-size: 0.9rem;">Ready to start your custom dev evaluation? Click below.</p>
+                <button onclick="openFullImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrfQnfOPmfzC1-wvM1o3AQilmdCUqp-assNA&s')" class="open-test-btn">OPEN TEST THREE</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="fullscreenOverlay" class="img-overlay" onclick="closeFullImage()">
+        <span class="close-btn">&times;</span>
+        <img id="displayImg" src="" alt="Full Screen Image">
+    </div>
+
+    <script>
+        function showStream(streamId, btn) {
+            document.querySelectorAll('.stream-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('.test-container').forEach(cont => cont.classList.remove('active'));
+            document.getElementById(streamId).classList.add('active');
+            
+            btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        // Image Fullscreen functions
+        function openFullImage(imgUrl) {
+            const overlay = document.getElementById('fullscreenOverlay');
+            const img = document.getElementById('displayImg');
+            img.src = imgUrl; // Aapki image ka link yahan set hoga
+            overlay.style.display = 'flex';
+        }
+
+        function closeFullImage() {
+            document.getElementById('fullscreenOverlay').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
