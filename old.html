@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synonym Verification Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -15,8 +15,7 @@
             --error: #ff4b2b;
         }
 
-        /* touch-action prevents double-tap zoom on mobile */
-        * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0a0e12; }
@@ -33,8 +32,6 @@
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
-            /* Prevents pull-to-refresh zoom/bounce */
-            overscroll-behavior: none;
         }
 
         .container-wrapper {
@@ -109,6 +106,7 @@
             }
         }
 
+        /* 0px to 450px Responsive Fix */
         @media (max-width: 450px) {
             .portal-card {
                 width: 95%;
@@ -119,7 +117,7 @@
                 padding: 15px;
             }
             .grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* Single column for small screens */
             }
             #report-window {
                 width: 95%;
@@ -128,12 +126,25 @@
             .neon-title {
                 font-size: 1.5rem;
             }
+            .stat-item {
+                padding: 6px 8px;
+                font-size: 0.7rem;
+            }
             .hindi-lbl {
                 font-size: 1rem;
             }
             .primary-btn {
                 padding: 12px;
                 font-size: 0.9rem;
+            }
+            .timer-badge {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+            .nav-item {
+                width: 40px;
+                height: 40px;
+                font-size: 0.8rem;
             }
         }
 
@@ -244,10 +255,29 @@
             box-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
         }
 
+        .timer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 75, 43, 0.1);
+            border: 1px solid rgba(255, 75, 43, 0.4);
+            color: var(--error);
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            box-shadow: 0 0 15px rgba(255, 75, 43, 0.15);
+        }
+        
+        .timer-badge svg {
+            width: 16px; height: 16px; fill: var(--error);
+        }
+
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .word-box { background: #1a202c; padding: 15px; border-radius: 15px; border: 1px solid #2d3748; text-align: left; position: relative; cursor: pointer; user-select: none; }
         .hindi-lbl { display: block; color: var(--neon-cyan); font-weight: 700; margin-bottom: 8px; font-size: 1.1rem; }
-        input { width: 100%;  border: 1px solid #2d3748; padding: 10px; border-radius: 8px; color: white; outline: none; font-size: 0.9rem; }
+        input { width: 100%; background: #0a0e12; border: 1px solid #2d3748; padding: 10px; border-radius: 8px; color: white; outline: none; font-size: 0.9rem; }
         input:focus { border-color: var(--neon-cyan); }
         .status { font-size: 0.75rem; margin-top: 5px; font-weight: 600; min-height: 15px; }
         .correct { color: var(--success); }
@@ -275,7 +305,7 @@
         .detail-title { color: var(--neon-cyan); font-weight: 700; margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; text-align: center; border-bottom: 1px solid #2d3748; padding-bottom: 5px; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
     <button id="nav-toggle-btn" onclick="toggleNav()">
         <svg viewBox="0 0 24 24">
@@ -304,6 +334,7 @@
             <ul>
                 <li>Total Questions: <span class="highlight-cyan">40 Words</span></li>
                 <li>Total Duration: <span class="highlight-cyan">05 Minutes</span></li>
+                <li>Slide Duration: <span class="highlight-cyan">30 Seconds</span></li>
                 <li>Lifelines: <span class="highlight-cyan">5 Hints</span></li>
             </ul>
             <button class="primary-btn" onclick="startTest()">Start Examination</button>
@@ -311,6 +342,11 @@
 
         <div id="quiz-section" class="portal-card">
             <div class="quiz-header-ux">
+                <div class="timer-badge">
+                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                    SLIDE TIME: <span id="slide-timer">59</span>s
+                </div>
+                
                 <div class="progress-text">
                     <span id="q-set-title">Question Set 1 of 20</span>
                     <span id="progress-percent">5%</span>
@@ -381,47 +417,28 @@
     </div>
 
     <script>
-        // Zoom Prevention Logic
-        document.addEventListener('keydown', function (e) {
-            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=')) {
-                e.preventDefault();
-            }
-        });
-        document.addEventListener('wheel', function (e) {
-            if (e.ctrlKey) e.preventDefault();
-        }, { passive: false });
-        document.addEventListener('gesturestart', function (e) {
-            e.preventDefault();
-        });
-
         const vocabData = [
-            {h: "Happy", e: "Joyful"}, {h: "Fast", e: "Quick"}, {h: "Beautiful", e: "Pretty"}, {h: "Large", e: "Enormous"},
+            {h: "Happy", e: "Joyful"}, {h: "Fast", e: "Quick"}, {h: "Beautiful", e: "Pretty"}, {h: "Large", e: "Big"},
             {h: "Small", e: "Tiny"}, {h: "Smart", e: "Intelligent"}, {h: "Strong", e: "Powerful"}, {h: "Brave", e: "Courageous"},
-            {h: "Hard", e: "Difficult"}, {h: "Simple", e: "Easy"}, {h: "Angry", e: "Furious"}, {h: "Sad", e: "Unhappy"},
+            {h: "Hard", e: "Difficult"}, {h: "Simple", e: "Easy"}, {h: "Mad", e: "Angry"}, {h: "Sad", e: "Unhappy"},
             {h: "Kind", e: "Generous"}, {h: "Rich", e: "Wealthy"}, {h: "Poor", e: "Needy"}, {h: "Calm", e: "Peaceful"},
             {h: "Start", e: "Begin"}, {h: "End", e: "Finish"}, {h: "Fix", e: "Repair"}, {h: "Choose", e: "Select"},
             {h: "Help", e: "Assist"}, {h: "Keep", e: "Retain"}, {h: "Old", e: "Ancient"}, {h: "New", e: "Modern"},
             {h: "Thin", e: "Slim"}, {h: "Fat", e: "Chubby"}, {h: "Lazy", e: "Idle"}, {h: "Busy", e: "Active"},
-            {h: "Right", e: "Correct"}, {h: "Wrong", e: "Incorrect"}, {h: "Close", e: "Near"}, {h: "Far", e: "Distant"},
+            {h: "Right", e: "Correct"}, {h: "Wrong", e: "Incorrect"}, {h: "Near", e: "Close"}, {h: "Far", e: "Distant"},
             {h: "Great", e: "Wonderful"}, {h: "Boring", e: "Dull"}, {h: "Quiet", e: "Silent"}, {h: "Loud", e: "Noisy"},
-            {h: "True", e: "Genuine"}, {h: "False", e: "Fake"}, {h: "Cold", e: "Chilly"}, {h: "Hot", e: "Warm"},
-
-        {h: "Slow", e: "Slugish"}, {h: "Bad", e: "Awful"}, {h: "Dumb", e: "Foolish"}, {h: "Ugly", e: "Hideous"},
-            {h: "Weak", e: "Fragile"}, {h: "Hot", e: "Warm"}, {h: "Young", e: "Youthful"}, {h: "Tired", e: "Exhausted"},
-            {h: "Fearful", e: "Afraid"}, {h: "Serious", e: "Stern"}, {h: "Active", e: "Energetic"}, {h: "Loud", e: "Noisy"},
-
-            {h: "Helpful", e: "Supportive"}, {h: "Dull", e: "Blunt"}, {h: "Hard", e: "Firm"}, {h: "Wet", e: "Damp"},
-            {h: "Hungry", e: "Straving"}, {h: "Thirsty", e: "Parched"}, {h: "Exicted", e: "thrilled"}, {h: "Lonely", e: "Isolated"},
-            {h: "Friendly", e: "Sociable"}, {h: "Shy", e: "Bashful"}, {h: "Loyal", e: "Faithful"}, {h: "Hot", e: "Warm"},
-            
+            {h: "True", e: "Genuine"}, {h: "False", e: "Fake"}, {h: "Cold", e: "Chilly"}, {h: "Hot", e: "Warm"}
         ];
 
         let totalTime = 300; 
-        let totalTimerId;
+        let slideTime = 30;
+        let totalTimerId, slideTimerId;
         let lifelines = 5;
         let setCounter = 0;
         let completedSets = 0;
         let activeType = null;
+        let manualNav = false;
+
         let results = { correct: [], wrong: [], attempted: [], skipped: [] };
 
         function toggleNav() {
@@ -454,6 +471,7 @@
                 div.id = `nav-item-${i}`;
                 div.innerText = i;
                 div.onclick = function() { 
+                    manualNav = true;
                     generateBatch(i); 
                     if (window.innerWidth <= 850) toggleNav(); 
                 };
@@ -468,6 +486,20 @@
                 let sec = totalTime % 60;
                 document.getElementById('timer').innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
                 if (totalTime <= 0) { finishTest(); }
+            }, 1000);
+        }
+
+        function startSlideTimer() {
+            clearInterval(slideTimerId);
+            slideTime = 30;
+            document.getElementById('slide-timer').innerText = slideTime;
+            slideTimerId = setInterval(() => {
+                slideTime--;
+                document.getElementById('slide-timer').innerText = slideTime;
+                if (slideTime <= 0) { 
+                    manualNav = false;
+                    generateBatch();
+                }
             }, 1000);
         }
 
@@ -486,11 +518,16 @@
             
             if (forcedSetNum) {
                 setCounter = forcedSetNum;
+            } else if (!manualNav) {
+                setCounter++;
+                if(setCounter > 20) setCounter = 1;
             } else {
                 setCounter++;
                 if(setCounter > 20) setCounter = 1;
             }
             
+            manualNav = false;
+
             document.getElementById('q-set-title').innerText = `Question Set ${setCounter} of 20`;
             const percentage = (setCounter / 20) * 100;
             document.getElementById('progress-percent').innerText = `${Math.round(percentage)}%`;
@@ -508,6 +545,7 @@
                 div.innerHTML = `<span class="hindi-lbl">${item.h}</span><input type="text" id="ans-${i}" placeholder="Synonym..."><div id="hint-popup-${i}" class="hint-popup"></div><div id="status-${i}" class="status"></div>`;
                 grid.appendChild(div);
             });
+            startSlideTimer();
         }
 
         function checkAttempt(type) {
@@ -567,6 +605,7 @@
 
         function finishTest() {
             clearInterval(totalTimerId);
+            clearInterval(slideTimerId);
             const attemptedNames = results.attempted.map(v => v.h);
             results.skipped = vocabData.filter(v => !attemptedNames.includes(v.h));
             document.getElementById('quiz-section').style.display = 'none';
