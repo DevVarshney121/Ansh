@@ -501,7 +501,7 @@
                 const div = document.createElement('div');
                 div.className = 'word-box';
                 div.ondblclick = () => triggerHint(i, item.e);
-                div.innerHTML = `<span class="hindi-lbl">${item.h}</span><input type="text" id="ans-${i}" placeholder="English Word..."><div id="hint-popup-${i}" class="hint-popup"></div><div id="status-${i}" class="status"></div>`;
+                div.innerHTML = `<span class="hindi-lbl">${item.h}</span><input type="text" id="ans-${i}" placeholder="Word.."><div id="hint-popup-${i}" class="hint-popup"></div><div id="status-${i}" class="status"></div>`;
                 grid.appendChild(div);
             });
         }
