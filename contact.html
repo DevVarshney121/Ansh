@@ -247,7 +247,7 @@
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .word-box { background: #1a202c; padding: 15px; border-radius: 15px; border: 1px solid #2d3748; text-align: left; position: relative; cursor: pointer; user-select: none; }
         .hindi-lbl { display: block; color: var(--neon-cyan); font-weight: 700; margin-bottom: 8px; font-size: 1.1rem; }
-        input { width: 100%;  border: 1px solid #2d3748; padding: 10px; border-radius: 8px; color: rgb(98, 0, 0); outline: none; font-size: 0.9rem; }
+        input { width: 100%;  border: 1px solid #2d3748; padding: 10px; border-radius: 8px; color: rgb(98, 0, 0); outline: none; font-size: 0.9rem; background-color: #36494a;}
         input:focus { border-color: var(--neon-cyan); }
         .status { font-size: 0.75rem; margin-top: 5px; font-weight: 600; min-height: 15px; }
         .correct { color: var(--success); }
@@ -395,6 +395,13 @@
         });
 
         const vocabData = [
+         {h: "Slow", e: "Slugish"}, {h: "Bad", e: "Awful"}, {h: "Dumb", e: "Foolish"}, {h: "Ugly", e: "Hideous"},
+            {h: "Weak", e: "Fragile"}, {h: "Hot", e: "Warm"}, {h: "Young", e: "Youthful"}, {h: "Tired", e: "Exhausted"},
+            {h: "Fearful", e: "Afraid"}, {h: "Serious", e: "Stern"}, {h: "Active", e: "Energetic"}, {h: "Loud", e: "Noisy"},
+
+            {h: "Helpful", e: "Supportive"}, {h: "Dull", e: "Blunt"}, {h: "Hard", e: "Firm"}, {h: "Wet", e: "Damp"},
+            {h: "Hungry", e: "Straving"}, {h: "Thirsty", e: "Parched"}, {h: "Exicted", e: "thrilled"}, {h: "Lonely", e: "Isolated"},
+            {h: "Friendly", e: "Sociable"}, {h: "Shy", e: "Bashful"}, {h: "Loyal", e: "Faithful"}, {h: "Hot", e: "Warm"},
             {h: "Happy", e: "Joyful"}, {h: "Fast", e: "Quick"}, {h: "Beautiful", e: "Pretty"}, {h: "Large", e: "Enormous"},
             {h: "Small", e: "Tiny"}, {h: "Smart", e: "Intelligent"}, {h: "Strong", e: "Powerful"}, {h: "Brave", e: "Courageous"},
             {h: "Hard", e: "Difficult"}, {h: "Simple", e: "Easy"}, {h: "Angry", e: "Furious"}, {h: "Sad", e: "Unhappy"},
@@ -406,13 +413,7 @@
             {h: "Great", e: "Wonderful"}, {h: "Boring", e: "Dull"}, {h: "Quiet", e: "Silent"}, {h: "Loud", e: "Noisy"},
             {h: "True", e: "Genuine"}, {h: "False", e: "Fake"}, {h: "Cold", e: "Chilly"}, {h: "Hot", e: "Warm"},
 
-        {h: "Slow", e: "Slugish"}, {h: "Bad", e: "Awful"}, {h: "Dumb", e: "Foolish"}, {h: "Ugly", e: "Hideous"},
-            {h: "Weak", e: "Fragile"}, {h: "Hot", e: "Warm"}, {h: "Young", e: "Youthful"}, {h: "Tired", e: "Exhausted"},
-            {h: "Fearful", e: "Afraid"}, {h: "Serious", e: "Stern"}, {h: "Active", e: "Energetic"}, {h: "Loud", e: "Noisy"},
-
-            {h: "Helpful", e: "Supportive"}, {h: "Dull", e: "Blunt"}, {h: "Hard", e: "Firm"}, {h: "Wet", e: "Damp"},
-            {h: "Hungry", e: "Straving"}, {h: "Thirsty", e: "Parched"}, {h: "Exicted", e: "thrilled"}, {h: "Lonely", e: "Isolated"},
-            {h: "Friendly", e: "Sociable"}, {h: "Shy", e: "Bashful"}, {h: "Loyal", e: "Faithful"}, {h: "Hot", e: "Warm"},
+       
             
         ];
 
